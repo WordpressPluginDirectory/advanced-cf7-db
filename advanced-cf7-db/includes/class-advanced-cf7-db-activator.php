@@ -54,6 +54,9 @@ class Advanced_Cf7_Db_Activator {
 		//call function for php version check
 		vsz_check_php_version();
 
+		// Remove legacy CSV folder from old versions (admin/csv)
+		vsz_cf7_remove_legacy_csv_folder();
+
 	}
 
 }
@@ -68,6 +71,53 @@ function vsz_check_php_version(){
 	        <p><?php echo 'You need to update the php version to activate the plugin, your currrent php version is '.PHP_VERSION; exit; ?></p>
 	    </div><?php
     }
+}
+
+/**
+ * Remove legacy CSV folder that was previously used to store import/export files.
+ *
+ * The directory used to live under the plugin path at admin/csv. Since files are now
+ * stored under the uploads directory (advanced-cf7-db-import/csv/), this legacy
+ * folder can be safely removed on activation/update.
+ */
+function vsz_cf7_remove_legacy_csv_folder() {
+
+	$plugin_dir = plugin_dir_path( dirname( __FILE__ ) );
+	$legacy_dir = trailingslashit( $plugin_dir ) . 'admin/csv';
+
+	if ( ! is_dir( $legacy_dir ) ) {
+		return;
+	}
+
+	$plugin_dir_real = realpath( $plugin_dir );
+	$legacy_dir_real = realpath( $legacy_dir );
+
+	// Extra safety: ensure the directory we are about to delete is inside this plugin.
+	if ( ! $plugin_dir_real || ! $legacy_dir_real || strpos( $legacy_dir_real, $plugin_dir_real ) !== 0 ) {
+		return;
+	}
+
+	// Prefer WordPress core helper when available.
+	if ( function_exists( 'wp_delete_directory' ) ) {
+		wp_delete_directory( $legacy_dir_real );
+		return;
+	}
+
+	// Fallback recursive delete for older WordPress versions.
+	$files = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator( $legacy_dir_real, RecursiveDirectoryIterator::SKIP_DOTS ),
+		RecursiveIteratorIterator::CHILD_FIRST
+	);
+
+	foreach ( $files as $file ) {
+		if ( $file->isDir() ) {
+			@rmdir( $file->getRealPath() ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		} else {
+			@unlink( $file->getRealPath() ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		}
+	}
+
+	@rmdir( $legacy_dir_real ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 }
 
 

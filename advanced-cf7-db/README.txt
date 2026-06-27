@@ -2,8 +2,8 @@
 Contributors: vsourz1td
 Tags: contact form 7 db, contact form db, advanced cf7 db, contact form 7, database
 Requires at least: 4.0
-Tested up to: 6.7.1
-Stable tag: 2.0.6
+Tested up to: 7.0
+Stable tag: 2.1.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,33 @@ return $contact_form_ids;
 
 
 == Changelog ==
+= 2.1.2 =
+* Security: Added capability checks to restrict unauthorized access to frontend views.
+* Enhancement: Added integration with Advanced CF7 DB – User Access Manager plugin for improved user access control.
+* Improvement: Applied the same user access rules to frontend views, ensuring consistent capability enforcement across both the admin dashboard and frontend.
+
+= 2.1.1 =
+* Data Storage Update: Data is now saved in the WordPress uploads directory instead of the plugin's admin CSV directory, improving compatibility and organization.
+* Form List Enhancement: The Import CSV form selection and Advanced CF7 DB form selection now display an alphabetically sorted list of forms for easier navigation.
+* WPML Support: Added compatibility with WPML for multilingual functionality.
+
+= 2.1.0 =
+* Security Fix: Fixed Cross-Site Request Forgery (CSRF) vulnerability in form entry deletion (CVE-2026-0811)
+* Security Fix: Added proper authorization checks for form submissions export functionality (CVE-2026-0814)
+* Security Fix: Added nonce verification to all export operations (CSV and Excel)
+* Security Fix: Added capability checks to ensure only authorized users can export form data
+* Enhanced security across all admin operations
+* We have upgraded with Security patches.
+* Compatible with WordPress 6.9.4
+
+= 2.0.9 =
+* We have upgraded with Security patches.
+
+= 2.0.8 =
+* Minor Bug Fixing causing Website Crash.
+
+= 2.0.7 =
+* Updated Freemius SDK to latest version.
 
 = 2.0.6 =
 * We have upgraded with Security patches
